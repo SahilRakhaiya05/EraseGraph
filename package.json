@@ -1,0 +1,20 @@
+{
+  "name": "erasegraph",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "scripts": {
+    "dev:api": "npm --prefix services/erasegraph-mcp run dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "build": "npm --prefix services/erasegraph-mcp run build && npm --prefix apps/web run build",
+    "typecheck": "npm --prefix services/erasegraph-mcp run typecheck && npm --prefix apps/web run typecheck",
+    "lint": "npm --prefix apps/web run lint",
+    "test": "npm --prefix services/erasegraph-mcp test && npm --prefix apps/web test",
+    "audit:prod": "npm --prefix services/erasegraph-mcp audit --omit=dev --audit-level=moderate && npm --prefix apps/web audit --omit=dev --audit-level=moderate",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm run audit:prod",
+    "configure:trueforge": "node scripts/configure-trueforge.mjs",
+    "bridge:wsl": "node scripts/bridge-wsl-mcp.mjs"
+  }
+}
