@@ -106,4 +106,29 @@ describe("HTTP surfaces", () => {
     });
     expect(confirmed.status).toBe(200);
   });
+
+  it("allows same-origin hosted requests and still rejects cross-origin browsers", async () => {
+    await new Promise<void>((resolve, reject) =>
+      server.close((error) => (error === undefined ? resolve() : reject(error)))
+    );
+    await controlPlane.close();
+
+    controlPlane = new EraseGraphControlPlane({ store: new MemoryEraseGraphStore() });
+    await controlPlane.initialize();
+    server = createServer(createApp(controlPlane, { mcpBearerToken: MCP_TOKEN, requestPolicy: "hosted" }));
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
+    const address = server.address() as AddressInfo;
+    baseUrl = `http://127.0.0.1:${address.port}`;
+    const host = `127.0.0.1:${address.port}`;
+
+    const allowed = await fetch(`${baseUrl}/api/state`, {
+      headers: { Host: host, Origin: `http://${host}` }
+    });
+    expect(allowed.status).toBe(200);
+
+    const blocked = await fetch(`${baseUrl}/api/state`, {
+      headers: { Host: host, Origin: "https://attacker.example" }
+    });
+    expect(blocked.status).toBe(403);
+  });
 });

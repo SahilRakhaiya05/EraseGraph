@@ -7,17 +7,32 @@ const trueForgeProxy = {
   rewrite: (path: string) => path.replace(/^\/trueforge/, ""),
 };
 
+const controlPlaneProxy = {
+  target: "http://127.0.0.1:8787",
+  changeOrigin: false,
+};
+
 export default defineConfig({
   plugins: [react()],
   server: {
     host: "127.0.0.1",
     port: 5173,
-    proxy: { "/trueforge": trueForgeProxy },
+    proxy: {
+      "/api": controlPlaneProxy,
+      "/health": controlPlaneProxy,
+      "/mcp": controlPlaneProxy,
+      "/trueforge": trueForgeProxy,
+    },
   },
   preview: {
     host: "127.0.0.1",
     port: 4173,
-    proxy: { "/trueforge": trueForgeProxy },
+    proxy: {
+      "/api": controlPlaneProxy,
+      "/health": controlPlaneProxy,
+      "/mcp": controlPlaneProxy,
+      "/trueforge": trueForgeProxy,
+    },
   },
   test: {
     environment: "jsdom",

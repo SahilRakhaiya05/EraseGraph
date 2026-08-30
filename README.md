@@ -100,7 +100,17 @@ EraseGraph demonstrates technical safeguards. It does **not** certify legal comp
 | Evidence | Canonical JSON, SHA-256 plan/source hashes, hash-linked audit events with an explicit anchoring limitation |
 | Validation | Vitest, Testing Library, ESLint, TypeScript, production builds, npm audit |
 
-## Quick start
+## Deploy on Vercel (hosted product URL)
+
+The public SPA and a memory-backed control plane deploy together on Vercel. Same-origin `/api` and `/health` rewrites serve the operator UI without Docker. Use the local Postgres/MinIO path below for the judging video and irreversible-tool demo.
+
+```bash
+npx vercel --prod
+```
+
+Vercel sets `VERCEL=1` automatically. The hosted adapter uses the disposable in-memory store, same-origin request policy, and the built web app from `apps/web/dist`. TrueForge still runs locally (or on your harness host) against a reachable MCP URL when you need the full approval gate.
+
+## Quick start (local judging path)
 
 Prerequisites: Node **22.14+**, npm, Docker Desktop/Engine, and an OpenAI API key supported by TrueForge. A local Linux/WSL sandbox also needs Python **3.12+** with `venv` and Bubblewrap (`bwrap`); use a configured remote sandbox if those packages are unavailable.
 
@@ -223,7 +233,7 @@ Run the full local gate:
 npm run check
 ```
 
-The suite currently contains **49 automated tests** across the web app and MCP control plane. It covers the live case story, operator surfaces, architecture overview, graph/ledger search and retention filtering, workspace identity and sync-state controls, joined polling/manual refreshes, landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. GitHub Actions runs this complete gate on every pull request; both production dependency trees currently audit with zero known vulnerabilities.
+The suite currently contains **50 automated tests** across the web app and MCP control plane. It covers the live case story, operator surfaces, architecture overview, graph/ledger search and retention filtering, workspace identity and sync-state controls, joined polling/manual refreshes, landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. GitHub Actions runs this complete gate on every pull request; both production dependency trees currently audit with zero known vulnerabilities.
 
 ## Repository map
 

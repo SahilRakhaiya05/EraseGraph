@@ -8,8 +8,11 @@ import { mountMcpEndpoint } from "./mcp-server.js";
 const LOCAL_ORIGIN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
 const LOCAL_HOST = /^(localhost|127\.0\.0\.1)(:\d+)?$/i;
 
+export type RequestPolicy = "loopback" | "hosted";
+
 interface AppOptions {
   mcpBearerToken: string;
+  requestPolicy?: RequestPolicy;
 }
 
 function secretsMatch(actual: string, expected: string): boolean {
@@ -18,20 +21,53 @@ function secretsMatch(actual: string, expected: string): boolean {
   return timingSafeEqual(actualDigest, expectedDigest);
 }
 
+function isAllowedRequest(host: string | undefined, origin: string | undefined, policy: RequestPolicy): boolean {
+  if (host === undefined || host.length === 0) return false;
+
+  if (policy === "loopback") {
+    return LOCAL_HOST.test(host) && (origin === undefined || LOCAL_ORIGIN.test(origin));
+  }
+
+  // Hosted/Vercel: only same-origin browser calls (or non-browser calls without Origin).
+  if (origin === undefined) return true;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
+function isAllowedOrigin(origin: string, host: string, policy: RequestPolicy): boolean {
+  if (policy === "loopback") return LOCAL_ORIGIN.test(origin);
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 export function createApp(controlPlane: EraseGraphControlPlane, options: AppOptions): Express {
+  const requestPolicy = options.requestPolicy ?? "loopback";
   const app = express();
   app.disable("x-powered-by");
   app.use(express.json({ limit: "256kb" }));
   app.use((req, res, next) => {
     const host = req.header("host");
     const origin = req.header("origin");
-    if (host === undefined || !LOCAL_HOST.test(host) || (origin !== undefined && !LOCAL_ORIGIN.test(origin))) {
-      res.status(403).json({ error: { code: "LOCAL_REQUEST_REQUIRED", message: "Only loopback requests are accepted." } });
+    if (!isAllowedRequest(host, origin, requestPolicy)) {
+      res.status(403).json({
+        error: {
+          code: requestPolicy === "loopback" ? "LOCAL_REQUEST_REQUIRED" : "ORIGIN_NOT_ALLOWED",
+          message: requestPolicy === "loopback"
+            ? "Only loopback requests are accepted."
+            : "Only same-origin hosted requests are accepted.",
+        },
+      });
       return;
     }
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("Referrer-Policy", "no-referrer");
-    if (origin !== undefined && LOCAL_ORIGIN.test(origin)) {
+    if (origin !== undefined && host !== undefined && isAllowedOrigin(origin, host, requestPolicy)) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       res.setHeader("Vary", "Origin");
       res.setHeader("Access-Control-Allow-Headers", "content-type, mcp-protocol-version, x-erasegraph-demo");

@@ -9,6 +9,7 @@
     "dev:api": "npm --prefix services/erasegraph-mcp run dev",
     "dev:web": "npm --prefix apps/web run dev",
     "build": "npm --prefix services/erasegraph-mcp run build && npm --prefix apps/web run build",
+    "build:vercel": "npm --prefix services/erasegraph-mcp ci && npm --prefix services/erasegraph-mcp run build && npm --prefix apps/web ci && npm --prefix apps/web run build",
     "typecheck": "npm --prefix services/erasegraph-mcp run typecheck && npm --prefix apps/web run typecheck",
     "lint": "npm --prefix apps/web run lint",
     "test": "npm --prefix services/erasegraph-mcp test && npm --prefix apps/web test",
