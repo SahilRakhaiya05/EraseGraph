@@ -50,7 +50,7 @@ TrueForge is the execution boundary: MCP carries every live read and write; dyna
 - Fail-closed MinIO metadata/version-history discovery and recoverable reset markers
 - Independent existence verification
 - SHA-256 hash-linked audit trail with an explicit external-anchoring limitation
-- 39 automated frontend/backend tests plus typecheck, lint, production build, and dependency audit
+- 48 automated frontend/backend tests plus typecheck, lint, production build, dependency audit, and a pull-request CI gate
 
 ## Track statements
 
@@ -64,7 +64,7 @@ The agent never receives arbitrary database credentials and never gets final aut
 
 ### Best UI
 
-The original editorial landing page is a working product surface: live case lookup, keyboard-operable workflow, safety-control bento, current evidence refresh, local setup copy, FAQ, and responsive navigation all connect to real state or actions. Inside the workspace, a spatial purpose graph shows every copy and its fate; the action dock changes from suggested mission to exact approval diff to verified terminal state; and the official TrueForge UI is embedded as the working console. Both views are designed for desktop, iPad, and phone without hiding the decision boundary.
+The original editorial landing page is a working product surface: live case lookup, a state-driven operational case file, keyboard-operable workflow, safety-control bento, current evidence refresh, local setup copy, FAQ, and responsive navigation all connect to real state or actions. Inside the workspace, operators switch between a spatial purpose graph and a searchable decision ledger backed by live purpose, retention, fingerprint, and policy metadata. A live command bar exposes sync, deadline, phase, connection, and agent controls; the action dock advances from suggested mission to exact approval diff to verified terminal state; and the official TrueForge UI remains the working console. Every view is designed for desktop, iPad, and phone without hiding the decision boundary.
 
 ## Links
 

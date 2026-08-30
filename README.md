@@ -12,7 +12,7 @@ Withdraw Maya Chen's consent for model-training use, delete four training-only c
 
 The model orchestrates the investigation. Deterministic code decides what is allowed. A human authorizes the irreversible plan.
 
-The original public landing page leads with a live case lookup, interactive workflow, safety controls, current evidence, local setup, and FAQ. Every call to action opens a real workspace view, a live TrueForge console, current evidence, or an in-page explanation; the product surface is not a static mock-up.
+The original public landing page leads with a live case lookup, a state-driven operational case file, interactive workflow, safety controls, current evidence, local setup, and FAQ. Inside the workspace, operators can switch between the spatial graph and a searchable decision ledger backed by live purpose, retention, fingerprint, and policy metadata. Sync, filtering, evidence, navigation, and TrueForge actions are working controls rather than static mock-ups.
 
 ![EraseGraph live product overview](docs/assets/erasegraph-landing.png)
 
@@ -188,7 +188,7 @@ Run the full local gate:
 npm run check
 ```
 
-The suite currently contains **39 automated tests**. It covers landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. Both production dependency trees currently audit with zero known vulnerabilities.
+The suite currently contains **48 automated tests**. It covers the live case story, graph/ledger search and retention filtering, workspace identity and sync-state controls, joined polling/manual refreshes, landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. GitHub Actions runs this complete gate on every pull request; both production dependency trees currently audit with zero known vulnerabilities.
 
 ## Repository map
 

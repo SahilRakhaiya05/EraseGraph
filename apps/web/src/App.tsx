@@ -7,6 +7,7 @@ import { AppHeader } from "./components/AppHeader";
 import { DataGraph } from "./components/DataGraph";
 import { LandingPage } from "./components/LandingPage";
 import { RequestRail } from "./components/RequestRail";
+import { WorkspaceCommandBar } from "./components/WorkspaceCommandBar";
 import { useMissionState } from "./hooks/useMissionState";
 
 export default function App() {
@@ -66,6 +67,12 @@ export default function App() {
         onBack={openLanding}
         onOpenAgent={openAgent}
         onReset={() => void reset()}
+      />
+      <WorkspaceCommandBar
+        state={state}
+        connection={connection}
+        onOpenAgent={openAgent}
+        onRefresh={refresh}
       />
       <main className="mission-layout">
         <RequestRail state={state} />

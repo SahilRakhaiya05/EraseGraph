@@ -6,8 +6,11 @@ import {
   FileKey2,
   Fingerprint,
   HardDrive,
+  ListFilter,
   LockKeyhole,
+  Network,
   ReceiptText,
+  Search,
   ShieldCheck,
   Trash2,
   UserRound,
@@ -47,6 +50,9 @@ interface DataGraphProps {
 
 export function DataGraph({ state }: DataGraphProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<"graph" | "ledger">("graph");
+  const [decisionFilter, setDecisionFilter] = useState<"all" | "erase" | "retain">("all");
+  const [query, setQuery] = useState("");
   const sheetCloseRef = useRef<HTMLButtonElement>(null);
   const sheetTriggerRef = useRef<HTMLButtonElement | null>(null);
   const phase = deriveMissionPhase(state);
@@ -62,6 +68,26 @@ export function DataGraph({ state }: DataGraphProps) {
     () => systems.find((system) => system.id === selectedId) ?? null,
     [selectedId, systems],
   );
+  const allRecords = useMemo(
+    () => systems.flatMap((system) => system.records.map((record) => ({
+      ...record,
+      systemId: system.id,
+      systemName: system.name,
+    }))),
+    [systems],
+  );
+  const visibleRecords = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return allRecords.filter((record) => {
+      const actionGroup = record.action === "retain" ? "retain" : ["delete", "withdraw", "anonymize"].includes(record.action) ? "erase" : "all";
+      if (decisionFilter !== "all" && actionGroup !== decisionFilter) return false;
+      if (!normalizedQuery) return true;
+      return [record.label, record.id, record.category, record.systemName, record.retentionClass ?? "", record.reason ?? "", ...(record.purposes ?? [])]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedQuery);
+    });
+  }, [allRecords, decisionFilter, query]);
 
   const totalRecords = systems.reduce((sum, system) => sum + system.recordCount, 0);
   const plannedChanges = state.plan
@@ -95,16 +121,22 @@ export function DataGraph({ state }: DataGraphProps) {
           <h1 id="graph-title">Trace every copy. Prove every action.</h1>
           <p>Withdrawal is scoped to <code>{state.request.purpose}</code>; unrelated account data stays untouched.</p>
         </div>
-        <div className="case-metrics" aria-label="Case metrics">
-          <div><span>Systems</span><strong>{systems.length}</strong></div>
-          <div><span>Accounted</span><strong>{totalRecords}</strong></div>
-          <div><span>In scope</span><strong>{plannedChanges}</strong></div>
+        <div className="workspace-tools">
+          <div className="case-metrics" aria-label="Case metrics">
+            <div><span>Systems</span><strong>{systems.length}</strong></div>
+            <div><span>Accounted</span><strong>{totalRecords}</strong></div>
+            <div><span>In scope</span><strong>{plannedChanges}</strong></div>
+          </div>
+          <div className="view-switcher" role="group" aria-label="Workspace view">
+            <button type="button" aria-pressed={viewMode === "graph"} onClick={() => setViewMode("graph")}><Network size={13} /> Graph</button>
+            <button type="button" aria-pressed={viewMode === "ledger"} onClick={() => setViewMode("ledger")}><ListFilter size={13} /> Ledger</button>
+          </div>
         </div>
       </div>
 
       <StageTracker phase={phase} />
 
-      <div className={`data-graph phase-${phase}`}>
+      {viewMode === "graph" ? <div className={`data-graph phase-${phase}`}>
         <div className="graph-grid" aria-hidden="true" />
         <svg className="graph-edges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           {systems.map((system, index) => {
@@ -214,7 +246,41 @@ export function DataGraph({ state }: DataGraphProps) {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </div> : (
+        <section className="decision-ledger" aria-labelledby="decision-ledger-title">
+          <div className="ledger-toolbar">
+            <div><span className="eyebrow">Server-authoritative inventory</span><h2 id="decision-ledger-title">Decision ledger</h2><p>Search every approved resource, purpose tag, retention class, and policy outcome.</p></div>
+            <label className="ledger-search"><span className="sr-only">Search decision ledger</span><Search size={15} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search resources" /></label>
+            <div className="ledger-filters" role="group" aria-label="Filter decisions">
+              {(["all", "erase", "retain"] as const).map((filter) => (
+                <button key={filter} type="button" aria-pressed={decisionFilter === filter} onClick={() => setDecisionFilter(filter)}>{titleCase(filter)}</button>
+              ))}
+            </div>
+          </div>
+
+          <div className="ledger-count" role="status"><strong>{visibleRecords.length}</strong> of {allRecords.length} resources shown <span>· server-authoritative metadata</span></div>
+          <div className="ledger-table" role="table" aria-label="Resource policy decisions">
+            <div className="ledger-table-head" role="row">
+              <span role="columnheader">Resource</span><span role="columnheader">Purpose and retention</span><span role="columnheader">Decision</span>
+            </div>
+            <div className="ledger-table-body">
+              {visibleRecords.map((record) => (
+                <article className={`ledger-row action-${record.action}`} role="row" key={`${record.systemId}:${record.id}`}>
+                  <div role="cell" className="ledger-resource"><span className="record-action-icon">{actionIcons[record.action]}</span><div><strong>{record.label}</strong><small>{record.systemName} · {record.id}</small></div></div>
+                  <div role="cell" className="ledger-policy"><div>{(record.purposes ?? []).length > 0 ? record.purposes!.map((purpose) => <code key={purpose}>{titleCase(purpose)}</code>) : <code>Preview metadata</code>}</div><small>Retention: {titleCase(record.retentionClass ?? "none")} · fingerprint {shortFingerprint(record.fingerprint)}</small></div>
+                  <div role="cell" className="ledger-outcome"><span>{titleCase(record.action)}</span><small>{record.reason ?? `Matches the ${titleCase(state.request.purpose)} withdrawal scope.`}</small></div>
+                </article>
+              ))}
+              {visibleRecords.length === 0 && <div className="ledger-empty"><Search size={20} /><strong>No matching resources</strong><span>Change the search or decision filter.</span></div>}
+            </div>
+          </div>
+        </section>
+      )}
     </section>
   );
+}
+
+function shortFingerprint(value?: string): string {
+  if (!value) return "preview";
+  return `${value.slice(0, 8)}…`;
 }

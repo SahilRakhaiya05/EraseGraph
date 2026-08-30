@@ -8,7 +8,7 @@ This record separates three kinds of evidence: deterministic automated tests, a 
 
 | Surface | Evidence | Result |
 |---|---|---|
-| Repository gate | TypeScript, ESLint, Vitest, production build, production dependency audit | Passed; 39 tests and zero known production dependency vulnerabilities |
+| Repository gate | TypeScript, ESLint, Vitest, production build, production dependency audit | Passed; 48 tests and zero known production dependency vulnerabilities |
 | MCP transport | Official MCP SDK over stateless Streamable HTTP | Eight tools discovered and called through the wire protocol |
 | Connector boundary | Direct unauthenticated MCP request | Rejected with HTTP 401 |
 | Browser boundary | Hostile Origin and non-loopback Host tests | Rejected |

@@ -666,6 +666,9 @@ export class EraseGraphControlPlane {
           id: resource.resourceId,
           label: resource.label,
           category: resource.category,
+          purposes: resource.purposes,
+          retentionClass: resource.retentionClass,
+          fingerprint: resource.fingerprint,
           action,
           status,
           reason

@@ -4,15 +4,15 @@ Target runtime: **2:50**, leaving ten seconds for video variance.
 
 ## 0:00–0:20 — The right is easy to promise, hard to prove
 
-Show the EraseGraph mission control home screen.
+Show the EraseGraph landing page and scroll to the live operational case file.
 
 > Maya withdrew consent for model-training use. Her data exists as a training profile, embedding row, audio object, and transcript. Her active account, audit receipt, billing artifacts, and held records must remain. EraseGraph turns that request into one reviewable, verifiable operation.
 
-Point to `ER-2048`, the verified identity prerequisite, the one-month deadline, and the purpose scope.
+Point to `ER-2048`, the verified identity prerequisite, the one-month deadline, the purpose scope, and the four-erase/six-retain impact. Open the complete case.
 
 ## 0:20–0:45 — Real stores, not a storyboard
 
-Open the live record sheet for Postgres, then MinIO. Mention that the UI is polling the MCP control plane and that reset reseeds both stores.
+Use **Sync now**, switch from **Graph** to **Ledger**, search for `billing`, then filter **Retain**. Return to the graph and open the live record sheet for Postgres, then MinIO. Mention that the UI is polling the control plane and that reset reseeds both stores.
 
 > These are synthetic records in real local Postgres and MinIO. No compliance claim and no hidden production data.
 
