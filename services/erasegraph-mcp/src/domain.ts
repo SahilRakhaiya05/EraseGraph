@@ -184,6 +184,9 @@ export interface UiState {
       id: string;
       label: string;
       category: string;
+      purposes: string[];
+      retentionClass: RetentionClass;
+      fingerprint: string;
       action: PlanAction;
       status: string;
       reason?: string;

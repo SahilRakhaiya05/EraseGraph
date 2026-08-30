@@ -39,6 +39,12 @@ describe("HTTP surfaces", () => {
     expect(Object.keys(state).sort()).toEqual(["audit", "plan", "request", "systems", "verification"]);
     expect(state.request).toMatchObject({ id: DEMO_REQUEST_ID, subjectId: "C-1842", purpose: "model_training" });
     expect(state.systems).toHaveLength(2);
+    const systems = state.systems as Array<{ records: Array<Record<string, unknown>> }>;
+    expect(systems[0]?.records[0]).toMatchObject({
+      purposes: expect.any(Array),
+      retentionClass: expect.any(String),
+      fingerprint: expect.stringMatching(/^[a-f0-9]{64}$/)
+    });
   });
 
   it("exposes all eight tools over stateless Streamable HTTP", async () => {

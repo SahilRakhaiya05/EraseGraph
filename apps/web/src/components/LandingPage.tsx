@@ -17,10 +17,12 @@ import {
   ShieldCheck,
   Sparkles,
   Trash2,
+  UserCheck,
+  Waypoints,
 } from "lucide-react";
 import { useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
 import type { ConnectionStatus, MissionState } from "../types";
-import { deriveMissionPhase, formatTimestamp, shortHash, titleCase } from "../utils";
+import { deriveMissionPhase, formatDate, formatTimestamp, shortHash, titleCase } from "../utils";
 import { BrandMark } from "./BrandMark";
 
 interface LandingPageProps {
@@ -146,6 +148,7 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
         <nav className="landing-nav" aria-label="Primary navigation">
           <a className="landing-brand" href="#top" aria-label="EraseGraph home"><BrandMark /></a>
           <div className="landing-links">
+            <a href="#use-case">Use case</a>
             <a href="#workflow">Workflow</a>
             <a href="#safety">Safety</a>
             <a href="#evidence">Evidence</a>
@@ -161,7 +164,7 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
           <details className="landing-mobile-menu">
             <summary aria-label="Open navigation"><Menu size={19} /></summary>
             <div>
-              {[{ href: "#workflow", label: "Workflow" }, { href: "#safety", label: "Safety" }, { href: "#evidence", label: "Evidence" }, { href: "#run", label: "Run locally" }, { href: "#faq", label: "FAQ" }].map((item) => (
+              {[{ href: "#use-case", label: "Use case" }, { href: "#workflow", label: "Workflow" }, { href: "#safety", label: "Safety" }, { href: "#evidence", label: "Evidence" }, { href: "#run", label: "Run locally" }, { href: "#faq", label: "FAQ" }].map((item) => (
                 <a key={item.href} href={item.href} onClick={(event) => { const menu = event.currentTarget.closest("details"); if (menu) menu.open = false; }}>{item.label}</a>
               ))}
             </div>
@@ -223,6 +226,52 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
             <li key={item}><CheckCircle2 size={15} /> {item}</li>
           ))}
         </ul>
+
+        <section className="landing-section use-case-section" id="use-case" aria-labelledby="use-case-title">
+          <div className="section-heading split-heading">
+            <div><span className="section-kicker">A real operational case</span><h2 id="use-case-title">One request. Ten copies.<br />No blanket delete.</h2></div>
+            <p>Maya withdrew one purpose—not her entire customer relationship. EraseGraph converts that narrow instruction into a reviewable change across relational and object storage.</p>
+          </div>
+          <div className="case-story-grid">
+            <article className="case-file-card">
+              <div className="case-file-header">
+                <span><UserCheck size={22} /></span>
+                <div><small>Verified data-subject request</small><h3>{state.request.id} · {state.request.subjectName}</h3></div>
+                <i className={`connection-${connection}`}>{connectionLabels[connection]}</i>
+              </div>
+              <dl>
+                <div><dt>Subject</dt><dd>{state.request.subjectId}</dd></div>
+                <div><dt>Purpose withdrawn</dt><dd><code>{state.request.purpose}</code></dd></div>
+                <div><dt>Received</dt><dd>{formatDate(state.request.receivedAt)}</dd></div>
+                <div><dt>Target deadline</dt><dd>{formatDate(state.request.deadlineAt)}</dd></div>
+              </dl>
+              <div className="case-scope-map" aria-label="Current case scope">
+                <div><span><Database size={17} /></span><strong>{state.systems[0]?.recordCount ?? 0}</strong><small>Postgres rows</small></div>
+                <Waypoints size={22} />
+                <div><span><HardDrive size={17} /></span><strong>{state.systems[1]?.recordCount ?? 0}</strong><small>MinIO objects</small></div>
+              </div>
+              <button className="landing-button landing-button-dark" type="button" onClick={onLaunch}>Inspect the complete case <ArrowRight size={16} /></button>
+            </article>
+
+            <div className="case-outcome-stack">
+              <article className="outcome-card outcome-impact">
+                <span className="section-kicker">Purpose-aware impact</span>
+                <div><strong>{totals.erase}</strong><span>eligible to erase</span><i /> <strong>{totals.retain}</strong><span>must remain</span></div>
+                <p>Training-only copies are eligible for removal; account service, billing, consent proof, and legal-hold records remain governed by deterministic policy.</p>
+              </article>
+              <article className="outcome-card outcome-journey">
+                <div className={state.request.verified ? "is-complete" : ""}><span><UserCheck size={15} /></span><p><strong>Identity prerequisite</strong><small>{state.request.verified ? "Verified before the agent runs" : "Not verified"}</small></p></div>
+                <div className={totals.records > 0 ? "is-complete" : ""}><span><Search size={15} /></span><p><strong>Cross-store inventory</strong><small>{totals.records} resources accounted</small></p></div>
+                <div className={state.verification ? "is-complete" : state.plan ? "is-current" : ""}><span><KeyRound size={15} /></span><p><strong>Human decision</strong><small>{state.plan ? `${totals.erase} exact mutations awaiting approval` : "Rehearsal creates the exact diff"}</small></p></div>
+                <div className={state.verification ? "is-complete" : ""}><span><FileCheck2 size={15} /></span><p><strong>Independent proof</strong><small>{state.verification ? `${state.verification.failures} verification failures` : "Fresh reads run after execution"}</small></p></div>
+              </article>
+              <div className="case-story-actions">
+                <button className="landing-button landing-button-outline" type="button" onClick={() => void refreshEvidence()} disabled={refreshing}><RefreshCw className={refreshing ? "spin" : undefined} size={15} /> {refreshing ? "Checking" : "Check live state"}</button>
+                <button className="landing-button landing-button-dark" type="button" onClick={onLaunchAgent}><KeyRound size={15} /> Open human gate</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <section className="landing-section workflow-section" id="workflow" aria-labelledby="workflow-title">
           <div className="section-heading centered-heading">
@@ -376,7 +425,7 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
 
       <footer className="landing-footer">
         <div><BrandMark /><p>Right to erasure, with evidence.</p></div>
-        <nav aria-label="Footer navigation"><a href="#workflow">Workflow</a><a href="#safety">Safety</a><a href="#evidence">Evidence</a><a href="#run">Run locally</a><a href="#faq">FAQ</a><a href="https://www.wemakedevs.org/hackathons/trueforge" target="_blank" rel="noreferrer">TrueForge hackathon <ExternalLink size={13} /></a></nav>
+        <nav aria-label="Footer navigation"><a href="#use-case">Use case</a><a href="#workflow">Workflow</a><a href="#safety">Safety</a><a href="#evidence">Evidence</a><a href="#run">Run locally</a><a href="#faq">FAQ</a><a href="https://www.wemakedevs.org/hackathons/trueforge" target="_blank" rel="noreferrer">TrueForge hackathon <ExternalLink size={13} /></a></nav>
         <span>Synthetic demonstration · not legal advice</span>
       </footer>
     </div>

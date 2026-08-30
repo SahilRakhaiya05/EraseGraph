@@ -28,6 +28,9 @@ export interface DataRecord {
   id: string;
   label: string;
   category: string;
+  purposes?: string[];
+  retentionClass?: string;
+  fingerprint?: string;
   action: RecordAction;
   status: RecordStatus;
   reason?: string;

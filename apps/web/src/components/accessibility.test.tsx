@@ -58,4 +58,20 @@ describe("keyboard and assistive-technology behavior", () => {
     expect(screen.getByRole("listitem", { name: "Approve: current" })).toHaveAttribute("aria-current", "step");
     expect(screen.getByRole("listitem", { name: "Rehearse: completed" })).toBeInTheDocument();
   });
+
+  it("switches to a searchable decision ledger and filters real policy outcomes", () => {
+    render(<DataGraph state={demoState} />);
+    fireEvent.click(screen.getByRole("button", { name: "Ledger" }));
+    expect(screen.getByRole("heading", { name: "Decision ledger" })).toBeInTheDocument();
+    expect(screen.getByText(/10 resources shown/)).toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search decision ledger" }), { target: { value: "billing" } });
+    expect(screen.getByText("Billing invoice record")).toBeInTheDocument();
+    expect(screen.getByText("Billing invoice artifact")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Erase" }));
+    expect(screen.getByText("No matching resources")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Retain" }));
+    expect(document.querySelector(".ledger-count")).toHaveTextContent("2 of 10 resources shown");
+  });
 });

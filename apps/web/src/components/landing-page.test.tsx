@@ -62,6 +62,20 @@ describe("functional product overview", () => {
     await waitFor(() => expect(onRefresh).toHaveBeenCalledOnce());
   });
 
+  it("connects the live use-case story to real workspace controls", async () => {
+    const props = renderLanding();
+    expect(screen.getByRole("heading", { name: /One request\. Ten copies/i })).toBeInTheDocument();
+    expect(screen.getByText("4", { selector: ".outcome-impact strong" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Inspect the complete case" }));
+    fireEvent.click(screen.getByRole("button", { name: "Open human gate" }));
+    fireEvent.click(screen.getByRole("button", { name: "Check live state" }));
+
+    expect(props.onLaunch).toHaveBeenCalledOnce();
+    expect(props.onLaunchAgent).toHaveBeenCalledOnce();
+    await waitFor(() => expect(props.onRefresh).toHaveBeenCalledOnce());
+  });
+
   it("shows one honest queue item and expands its real policy pack", () => {
     render(<RequestRail state={demoState} />);
     expect(screen.getByText("ER-2048")).toBeInTheDocument();
