@@ -1,11 +1,10 @@
 import { AlertTriangle, Bot, CalendarClock, Check, RefreshCw, ShieldCheck, Waypoints } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ConnectionStatus, MissionState } from "../types";
+import type { MissionState } from "../types";
 import { deriveMissionPhase, shortHash, titleCase } from "../utils";
 
 interface WorkspaceCommandBarProps {
   state: MissionState;
-  connection: ConnectionStatus;
   onOpenAgent: () => void;
   onRefresh: () => Promise<boolean>;
 }
@@ -19,7 +18,7 @@ const progressByPhase = {
   failed: 82,
 } as const;
 
-export function WorkspaceCommandBar({ state, connection, onOpenAgent, onRefresh }: WorkspaceCommandBarProps) {
+export function WorkspaceCommandBar({ state, onOpenAgent, onRefresh }: WorkspaceCommandBarProps) {
   const [syncState, setSyncState] = useState<"idle" | "syncing" | "checked" | "failed">("idle");
   const resetTimerRef = useRef<number | null>(null);
   const mountedRef = useRef(true);
@@ -59,7 +58,10 @@ export function WorkspaceCommandBar({ state, connection, onOpenAgent, onRefresh 
     <section className="workspace-command-bar" aria-label="Live case command bar">
       <div className="command-case">
         <span className="command-case-icon"><Waypoints size={18} /></span>
-        <div><small>Active privacy operation</small><strong>{state.request.id} · {state.request.subjectName}</strong></div>
+        <div>
+          <small>Active privacy operation</small>
+          <strong>{state.request.id} · {state.request.subjectName}</strong>
+        </div>
       </div>
 
       <div className="command-progress" aria-label={`Workflow ${progressByPhase[phase]} percent complete`}>
@@ -73,7 +75,6 @@ export function WorkspaceCommandBar({ state, connection, onOpenAgent, onRefresh 
           Identity {state.request.verified ? "verified" : "unverified"}
         </span>
         <span><CalendarClock size={14} /> {daysRemaining === null ? "Deadline recorded" : `${daysRemaining} days left`}</span>
-        <span className={`signal-${connection}`}><i /> {titleCase(connection)}</span>
         {state.plan && <code title={state.plan.hash}>plan {shortHash(state.plan.hash, 8)}</code>}
       </div>
 
@@ -82,7 +83,9 @@ export function WorkspaceCommandBar({ state, connection, onOpenAgent, onRefresh 
           {syncState === "syncing" ? <RefreshCw className="spin" size={15} /> : syncState === "checked" ? <Check size={15} /> : syncState === "failed" ? <AlertTriangle size={15} /> : <RefreshCw size={15} />}
           {syncState === "syncing" ? "Syncing" : syncState === "checked" ? "Checked" : syncState === "failed" ? "Retry sync" : "Sync now"}
         </button>
-        <button type="button" className="primary-button" onClick={onOpenAgent}><Bot size={15} /> Open agent</button>
+        <button type="button" className="primary-button" onClick={onOpenAgent}>
+          <Bot size={15} /> Open agent
+        </button>
       </div>
     </section>
   );

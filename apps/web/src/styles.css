@@ -211,6 +211,12 @@ code {
   gap: 8px;
 }
 
+.header-reset {
+  min-height: 34px;
+  padding-inline: 12px;
+  font-size: 0.68rem;
+}
+
 .connection-pill,
 .harness-pill {
   display: inline-flex;
@@ -533,25 +539,42 @@ code {
 .subject-card {
   position: relative;
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 9px;
+  gap: 12px;
   margin: 18px 2px 0;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.58);
+  padding: 14px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(251, 250, 245, 0.88));
   border: 1px solid var(--border);
-  border-radius: 15px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.subject-card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  content: "";
+  background: linear-gradient(90deg, var(--forest), var(--mint), var(--lime));
+}
+
+.subject-card-head {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
 }
 
 .subject-avatar {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
   color: white;
-  background: var(--forest);
-  border-radius: 12px;
-  font-size: 0.69rem;
+  background: linear-gradient(145deg, #1a4030, var(--forest));
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(23, 55, 43, 0.22);
+  font-size: 0.72rem;
   font-weight: 780;
 }
 
@@ -559,31 +582,66 @@ code {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 2px;
+}
+
+.subject-verified {
+  width: max-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 0.55rem;
+  font-weight: 720;
+}
+
+.subject-verified.is-verified {
+  color: #166844;
+  background: var(--mint-soft);
+}
+
+.subject-verified.is-unverified {
+  color: #8a501a;
+  background: var(--amber-soft);
 }
 
 .subject-copy strong {
-  margin-top: 2px;
-  font-size: 0.75rem;
+  font-size: 0.82rem;
+  letter-spacing: -0.02em;
 }
 
-.subject-copy > span:last-child {
+.subject-email {
   overflow: hidden;
   color: var(--muted);
-  font-size: 0.59rem;
+  font-size: 0.58rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.subject-card > svg {
-  color: var(--mint);
+.subject-purpose-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  color: #234b37;
+  background: rgba(200, 244, 90, 0.22);
+  border: 1px solid rgba(80, 120, 38, 0.14);
+  border-radius: 12px;
+  font-size: 0.58rem;
+  font-weight: 680;
+}
+
+.subject-purpose-chip code {
+  color: #17372b;
+  font-size: 0.58rem;
 }
 
 .subject-card dl {
-  grid-column: 1 / -1;
   display: grid;
-  gap: 7px;
-  margin: 4px 0 0;
-  padding-top: 10px;
+  gap: 0;
+  margin: 0;
   border-top: 1px solid var(--border);
 }
 
@@ -591,7 +649,11 @@ code {
   display: flex;
   justify-content: space-between;
   gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(23, 32, 25, 0.06);
 }
+
+.subject-card dl > div:last-child { border-bottom: 0; padding-bottom: 0; }
 
 .subject-card dt,
 .subject-card dd {
@@ -602,35 +664,64 @@ code {
 .subject-card dt { color: var(--quiet); }
 .subject-card dd { color: var(--ink); font-weight: 650; text-align: right; }
 
+.policy-pack {
+  margin-top: 10px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
 .policy-link {
   width: 100%;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 9px;
-  margin-top: 10px;
-  padding: 10px 9px;
+  padding: 10px;
   color: var(--muted);
   text-align: left;
   background: transparent;
   border: 0;
-  border-radius: 11px;
+  border-radius: 12px;
   cursor: pointer;
 }
 
-.policy-link:hover { background: rgba(255, 255, 255, 0.5); }
-.policy-link > span { display: flex; flex-direction: column; }
-.policy-link strong { color: var(--ink); font-size: 0.68rem; }
+.policy-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: var(--forest);
+  background: rgba(200, 244, 90, 0.34);
+  border-radius: 10px;
+}
+
+.policy-link:hover { background: rgba(255, 255, 255, 0.72); }
+.policy-link > span:nth-child(2) { display: flex; flex-direction: column; }
+.policy-link strong { color: var(--ink); font-size: 0.7rem; }
 .policy-link small { color: var(--quiet); font-size: 0.58rem; }
 .policy-link > svg:last-child { transition: rotate 160ms ease; }
 .policy-link > svg:last-child.is-open { rotate: 180deg; }
 
-.policy-details { display: grid; gap: 7px; margin: 3px 2px 0; padding: 10px; background: rgba(255,255,255,0.62); border: 1px solid var(--border); border-radius: 12px; }
-.policy-details > div { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 5px; color: var(--mint); }
-.policy-details > div span { display: flex; flex-direction: column; }
-.policy-details strong { color: var(--ink); font-size: 0.61rem; }
+.policy-details {
+  display: grid;
+  gap: 8px;
+  margin: 0 6px 6px;
+  padding: 12px;
+  background: #f7f8f4;
+  border: 1px solid rgba(23, 32, 25, 0.08);
+  border-radius: 12px;
+}
+.policy-details > div { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 6px; color: var(--mint); }
+.policy-details > div span { display: flex; flex-direction: column; gap: 1px; }
+.policy-details strong { color: var(--ink); font-size: 0.62rem; }
 .policy-details small { color: var(--quiet); font-size: 0.54rem; }
-.policy-details p { margin: 3px 0 0; padding-top: 7px; color: var(--quiet); border-top: 1px solid var(--border); font-size: 0.52rem; line-height: 1.45; }
+.policy-details p { margin: 2px 0 0; padding-top: 8px; color: var(--quiet); border-top: 1px solid var(--border); font-size: 0.52rem; line-height: 1.45; }
+
+.ready-dock {
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+}
 
 .mission-main {
   min-width: 0;
@@ -2374,7 +2465,8 @@ code {
 
 @media (max-width: 580px) {
   .app-header { padding: 0 10px; }
-  .header-actions .icon-button { display: none; }
+  .header-reset span { display: none; }
+  .header-reset { width: 38px; padding: 0; justify-content: center; }
   .primary-button { padding: 0 11px; }
   .workspace-command-bar { grid-template-columns: minmax(0,1fr) auto; }
   .command-actions .secondary-button { width: 38px; padding: 0; font-size: 0; }

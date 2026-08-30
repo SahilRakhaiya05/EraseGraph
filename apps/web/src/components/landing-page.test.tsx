@@ -90,6 +90,8 @@ describe("functional product overview", () => {
     render(<RequestRail state={demoState} />);
     expect(screen.getByText("ER-2048")).toBeInTheDocument();
     expect(screen.queryByText("ER-2047")).not.toBeInTheDocument();
+    expect(screen.getByText("Verified subject")).toBeInTheDocument();
+    expect(screen.getByText("model_training")).toBeInTheDocument();
     expect(screen.queryByLabelText("Purpose withdrawal policy pack")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Policy pack/ }));

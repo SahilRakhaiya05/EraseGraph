@@ -65,12 +65,10 @@ export default function App() {
         connection={connection}
         isResetting={isResetting}
         onBack={openLanding}
-        onOpenAgent={openAgent}
         onReset={() => void reset()}
       />
       <WorkspaceCommandBar
         state={state}
-        connection={connection}
         onOpenAgent={openAgent}
         onRefresh={refresh}
       />
