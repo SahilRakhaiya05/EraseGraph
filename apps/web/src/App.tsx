@@ -86,7 +86,7 @@ export default function App() {
           <AlertTriangle size={16} />
           <span>
             <strong>{connection === "stale" ? "Showing the last confirmed live snapshot." : "Showing the safe preview seed."}</strong>{" "}
-            Reconnect the control plane on port 8787 before making a decision.
+            Reconnect the EraseGraph control plane before making a decision.
           </span>
           <button type="button" onClick={() => setNoticeDismissed(true)} aria-label="Dismiss preview notice"><X size={15} /></button>
         </div>

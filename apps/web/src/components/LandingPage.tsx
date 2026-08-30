@@ -629,7 +629,15 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
         </section>
 
         <section className="landing-section quickstart-section" id="run" aria-labelledby="quickstart-title">
-          <div><span className="section-kicker">Cloneable by design</span><h2 id="quickstart-title">Prepare the real data path.</h2><p>One repository contains the UI, typed MCP control plane, deterministic seed, TrueForge manifest, tests, and submission evidence. This command starts the stores and installs both apps; then start the API, web app, and TrueForge as documented. Only TrueForge needs your model-provider key.</p></div>
+          <div>
+            <span className="section-kicker">Cloneable by design</span>
+            <h2 id="quickstart-title">Run locally or deploy the hosted product.</h2>
+            <p>
+              One repository contains the UI, typed MCP control plane, deterministic seed, TrueForge manifest, tests, and submission evidence.
+              Use Docker locally for the judging path, or deploy the SPA + memory-backed API to Vercel with <code>npx vercel --prod</code>.
+              Only TrueForge needs your model-provider key.
+            </p>
+          </div>
           <div className="quickstart-command"><code>{QUICKSTART_COMMAND}</code><button type="button" onClick={() => void copyQuickstart()} aria-label="Copy local setup command">{copyStatus === "copied" ? <Check size={17} /> : <Copy size={17} />}{copyStatus === "copied" ? "Copied" : copyStatus === "failed" ? "Copy failed" : "Copy setup"}</button></div>
         </section>
 

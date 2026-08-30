@@ -20,8 +20,16 @@ function readToken(path: string): string {
   return token;
 }
 
-export function resolveMcpBearerToken(explicitToken?: string, path = DEFAULT_TOKEN_FILE): string {
+export function resolveMcpBearerToken(
+  explicitToken?: string,
+  path = DEFAULT_TOKEN_FILE,
+  options: { allowEphemeral?: boolean } = {},
+): string {
   if (explicitToken !== undefined) return explicitToken;
+
+  if (options.allowEphemeral || process.env.VERCEL === "1" || process.env.DEPLOYMENT_MODE === "hosted") {
+    return randomBytes(32).toString("base64url");
+  }
 
   try {
     return readToken(path);

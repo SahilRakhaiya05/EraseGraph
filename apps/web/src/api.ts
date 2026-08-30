@@ -2,8 +2,9 @@ import { demoState } from "./demoState";
 import type { MissionState } from "./types";
 import { z } from "zod";
 
+/** Empty string = same-origin (/api via Vite proxy locally, Vercel rewrites in production). */
 export const API_BASE_URL = (
-  import.meta.env.VITE_ERASEGRAPH_API_URL ?? "http://127.0.0.1:8787"
+  import.meta.env.VITE_ERASEGRAPH_API_URL ?? ""
 ).replace(/\/$/, "");
 
 export const TRUEFORGE_BASE_URL = (
