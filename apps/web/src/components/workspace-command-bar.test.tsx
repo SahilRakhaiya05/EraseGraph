@@ -15,7 +15,6 @@ describe("live workspace command bar", () => {
     render(
       <WorkspaceCommandBar
         state={demoState}
-        connection="live"
         onOpenAgent={onOpenAgent}
         onRefresh={onRefresh}
       />
@@ -41,7 +40,6 @@ describe("live workspace command bar", () => {
     render(
       <WorkspaceCommandBar
         state={unverifiedState}
-        connection="live"
         onOpenAgent={vi.fn()}
         onRefresh={vi.fn(async () => true)}
       />
@@ -55,7 +53,6 @@ describe("live workspace command bar", () => {
     render(
       <WorkspaceCommandBar
         state={demoState}
-        connection="stale"
         onOpenAgent={vi.fn()}
         onRefresh={vi.fn(async () => false)}
       />
@@ -71,7 +68,6 @@ describe("live workspace command bar", () => {
     render(
       <WorkspaceCommandBar
         state={demoState}
-        connection="live"
         onOpenAgent={vi.fn()}
         onRefresh={vi.fn(async () => true)}
       />

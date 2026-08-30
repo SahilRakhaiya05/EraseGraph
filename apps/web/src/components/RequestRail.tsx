@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Clock3, Fingerprint } from "lucide-react";
+import { Check, ChevronDown, Fingerprint, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import type { MissionState } from "../types";
 import { deriveMissionPhase, formatDate, titleCase } from "../utils";
@@ -41,13 +41,21 @@ export function RequestRail({ state }: RequestRailProps) {
       </nav>
 
       <section className="subject-card" aria-labelledby="subject-title">
-        <div className="subject-avatar" aria-hidden="true">{initials}</div>
-        <div className="subject-copy">
-          <span className="eyebrow" id="subject-title">Verified subject</span>
-          <strong>{state.request.subjectName}</strong>
-          <span>{state.request.email}</span>
+        <div className="subject-card-head">
+          <div className="subject-avatar" aria-hidden="true">{initials}</div>
+          <div className="subject-copy">
+            <span className={`subject-verified ${state.request.verified ? "is-verified" : "is-unverified"}`} id="subject-title">
+              {state.request.verified ? <ShieldCheck size={12} /> : <Fingerprint size={12} />}
+              {state.request.verified ? "Verified subject" : "Unverified subject"}
+            </span>
+            <strong>{state.request.subjectName}</strong>
+            <span className="subject-email">{state.request.email}</span>
+          </div>
         </div>
-        <Fingerprint size={20} />
+        <div className="subject-purpose-chip">
+          <span>Purpose</span>
+          <code>{state.request.purpose}</code>
+        </div>
         <dl>
           <div><dt>Subject ID</dt><dd>{state.request.subjectId}</dd></div>
           <div><dt>Received</dt><dd>{formatDate(state.request.receivedAt)}</dd></div>
@@ -55,19 +63,30 @@ export function RequestRail({ state }: RequestRailProps) {
         </dl>
       </section>
 
-      <button className="policy-link" type="button" onClick={() => setPolicyOpen((open) => !open)} aria-expanded={policyOpen} aria-controls="policy-pack-details">
-        <Clock3 size={16} />
-        <span><strong>Policy pack</strong><small>Purpose withdrawal · v1.2</small></span>
-        <ChevronDown size={16} className={policyOpen ? "is-open" : undefined} />
-      </button>
-      {policyOpen && (
-        <section className="policy-details" id="policy-pack-details" aria-label="Purpose withdrawal policy pack">
-          <div><Check size={12} /><span><strong>Target purpose</strong><small>Delete unless retained</small></span></div>
-          <div><Check size={12} /><span><strong>Outside scope</strong><small>Retain unchanged</small></span></div>
-          <div><Check size={12} /><span><strong>Protected classes</strong><small>Legal hold, billing, consent proof</small></span></div>
-          <p>Demo policy only; it does not determine legal compliance.</p>
-        </section>
-      )}
+      <section className="policy-pack">
+        <button
+          className="policy-link"
+          type="button"
+          onClick={() => setPolicyOpen((open) => !open)}
+          aria-expanded={policyOpen}
+          aria-controls="policy-pack-details"
+        >
+          <span className="policy-icon"><ShieldCheck size={15} /></span>
+          <span>
+            <strong>Policy pack</strong>
+            <small>Purpose withdrawal · v1.2</small>
+          </span>
+          <ChevronDown size={16} className={policyOpen ? "is-open" : undefined} />
+        </button>
+        {policyOpen && (
+          <div className="policy-details" id="policy-pack-details" aria-label="Purpose withdrawal policy pack">
+            <div><Check size={12} /><span><strong>Target purpose</strong><small>Delete unless retained</small></span></div>
+            <div><Check size={12} /><span><strong>Outside scope</strong><small>Retain unchanged</small></span></div>
+            <div><Check size={12} /><span><strong>Protected classes</strong><small>Legal hold, billing, consent proof</small></span></div>
+            <p>Demo policy only; it does not determine legal compliance.</p>
+          </div>
+        )}
+      </section>
     </aside>
   );
 }

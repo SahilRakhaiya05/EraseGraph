@@ -65,6 +65,8 @@ describe("functional product overview", () => {
   it("connects the live use-case story to real workspace controls", async () => {
     const props = renderLanding();
     expect(screen.getByRole("heading", { name: /One request\. Ten copies/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Operator surfaces built for signal-to-action speed/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Trust boundaries you can read at a glance/i })).toBeInTheDocument();
     expect(screen.getByText("4", { selector: ".outcome-impact strong" })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Inspect the complete case" }));
@@ -76,10 +78,20 @@ describe("functional product overview", () => {
     await waitFor(() => expect(props.onRefresh).toHaveBeenCalledOnce());
   });
 
+  it("routes operator surfaces into workspace and agent controls", () => {
+    const props = renderLanding();
+    fireEvent.click(screen.getByRole("button", { name: "Open graph" }));
+    fireEvent.click(screen.getByRole("button", { name: "Open gate" }));
+    expect(props.onLaunch).toHaveBeenCalledOnce();
+    expect(props.onLaunchAgent).toHaveBeenCalledOnce();
+  });
+
   it("shows one honest queue item and expands its real policy pack", () => {
     render(<RequestRail state={demoState} />);
     expect(screen.getByText("ER-2048")).toBeInTheDocument();
     expect(screen.queryByText("ER-2047")).not.toBeInTheDocument();
+    expect(screen.getByText("Verified subject")).toBeInTheDocument();
+    expect(screen.getByText("model_training")).toBeInTheDocument();
     expect(screen.queryByLabelText("Purpose withdrawal policy pack")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Policy pack/ }));

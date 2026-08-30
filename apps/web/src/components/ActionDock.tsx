@@ -74,14 +74,15 @@ export function ActionDock({ state, onOpenAgent }: ActionDockProps) {
   }
 
   return (
-    <div className="action-dock command-dock">
+    <div className="action-dock command-dock ready-dock">
       <span className="dock-icon"><Bot size={21} /></span>
-      <div><span className="eyebrow">Suggested mission</span><strong>Withdraw ML-training consent for {state.request.subjectId}</strong><small>TrueForge will discover, rehearse, pause, execute, and verify.</small></div>
+      <div>
+        <span className="eyebrow">Suggested mission</span>
+        <strong>Withdraw ML-training consent for {state.request.subjectId}</strong>
+        <small>Copy the prompt, then press Open agent in the command bar.</small>
+      </div>
       <button className="secondary-button" type="button" onClick={() => void copyPrompt()}>
         <Copy size={16} /> {copied ? "Copied" : "Copy prompt"}
-      </button>
-      <button className="primary-button" type="button" onClick={onOpenAgent}>
-        Run with agent <ArrowRight size={17} />
       </button>
     </div>
   );
