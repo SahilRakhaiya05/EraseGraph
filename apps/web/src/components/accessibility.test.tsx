@@ -74,4 +74,24 @@ describe("keyboard and assistive-technology behavior", () => {
     fireEvent.click(screen.getByRole("button", { name: "Retain" }));
     expect(document.querySelector(".ledger-count")).toHaveTextContent("2 of 10 resources shown");
   });
+
+  it("searches the retention class displayed in the decision ledger", () => {
+    const retentionState = {
+      ...demoState,
+      systems: demoState.systems.map((system, systemIndex) => ({
+        ...system,
+        records: system.records.map((record, recordIndex) => (
+          systemIndex === 0 && recordIndex === 0
+            ? { ...record, retentionClass: "legal_hold" }
+            : record
+        )),
+      })),
+    };
+    render(<DataGraph state={retentionState} />);
+    fireEvent.click(screen.getByRole("button", { name: "Ledger" }));
+    fireEvent.change(screen.getByRole("textbox", { name: "Search decision ledger" }), { target: { value: "legal_hold" } });
+
+    expect(screen.getByText("Active customer account")).toBeInTheDocument();
+    expect(document.querySelector(".ledger-count")).toHaveTextContent("1 of 10 resources shown");
+  });
 });

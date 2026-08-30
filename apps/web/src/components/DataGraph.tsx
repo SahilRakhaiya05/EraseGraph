@@ -82,7 +82,7 @@ export function DataGraph({ state }: DataGraphProps) {
       const actionGroup = record.action === "retain" ? "retain" : ["delete", "withdraw", "anonymize"].includes(record.action) ? "erase" : "all";
       if (decisionFilter !== "all" && actionGroup !== decisionFilter) return false;
       if (!normalizedQuery) return true;
-      return [record.label, record.id, record.category, record.systemName, record.reason ?? "", ...(record.purposes ?? [])]
+      return [record.label, record.id, record.category, record.systemName, record.retentionClass ?? "", record.reason ?? "", ...(record.purposes ?? [])]
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery);

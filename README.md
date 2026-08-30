@@ -188,7 +188,7 @@ Run the full local gate:
 npm run check
 ```
 
-The suite currently contains **42 automated tests**. It covers the live case story, graph/ledger search and filtering, workspace sync controls, landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. GitHub Actions runs this complete gate on every pull request; both production dependency trees currently audit with zero known vulnerabilities.
+The suite currently contains **48 automated tests**. It covers the live case story, graph/ledger search and retention filtering, workspace identity and sync-state controls, joined polling/manual refreshes, landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. GitHub Actions runs this complete gate on every pull request; both production dependency trees currently audit with zero known vulnerabilities.
 
 ## Repository map
 

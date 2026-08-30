@@ -70,7 +70,7 @@ This is a conservative internal red-team estimate of the finished local artifact
 |---|---:|---|
 | Potential impact | **91/100** | Turns a widely recognized privacy right into an inspectable operational change while keeping legal boundaries explicit |
 | Creativity | **93/100** | Purpose-level erasure graph and evidence-first operator journey occupy a clear gap in the 173-repository landscape |
-| Technical excellence | **94/100** | Real Postgres/MinIO path, exact-version mutation, resumable execution, drift rejection, fresh verification, 42 tests, and pull-request CI |
+| Technical excellence | **94/100** | Real Postgres/MinIO path, exact-version mutation, resumable execution, drift rejection, fresh verification, 48 tests, and pull-request CI |
 | Sponsor-tool use | **97/100** | Dynamic subagents, typed MCP, dependency-free sandbox reconciliation, native approval, persistent resume, and embedded TrueForge UI |
 | Control and safety | **96/100** | Deterministic policy, complete-plan checks, state-bound approval, immutable attribution, idempotency, recovery, and honest evidence limits |
 | Presentation | **94/100** | Functional editorial overview plus responsive decision workspace, live evidence, accessible interactions, and a timed demo story |

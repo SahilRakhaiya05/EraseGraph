@@ -31,7 +31,7 @@ interface LandingPageProps {
   error: string | null;
   onLaunch: () => void;
   onLaunchAgent: () => void;
-  onRefresh: () => Promise<void>;
+  onRefresh: () => Promise<boolean>;
 }
 
 const connectionLabels: Record<ConnectionStatus, string> = {

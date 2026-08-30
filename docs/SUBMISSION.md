@@ -50,7 +50,7 @@ TrueForge is the execution boundary: MCP carries every live read and write; dyna
 - Fail-closed MinIO metadata/version-history discovery and recoverable reset markers
 - Independent existence verification
 - SHA-256 hash-linked audit trail with an explicit external-anchoring limitation
-- 42 automated frontend/backend tests plus typecheck, lint, production build, dependency audit, and a pull-request CI gate
+- 48 automated frontend/backend tests plus typecheck, lint, production build, dependency audit, and a pull-request CI gate
 
 ## Track statements
 

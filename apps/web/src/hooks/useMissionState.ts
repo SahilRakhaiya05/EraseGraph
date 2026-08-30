@@ -10,28 +10,34 @@ export function useMissionState() {
   const [error, setError] = useState<string | null>(null);
   const [isResetting, setIsResetting] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
-  const inFlightRef = useRef(false);
+  const refreshPromiseRef = useRef<Promise<boolean> | null>(null);
   const hasLiveStateRef = useRef(false);
 
-  const refresh = useCallback(async () => {
-    if (inFlightRef.current) return;
-    inFlightRef.current = true;
+  const refresh = useCallback((): Promise<boolean> => {
+    if (refreshPromiseRef.current) return refreshPromiseRef.current;
     const controller = new AbortController();
     abortRef.current = controller;
-    try {
-      const nextState = await fetchMissionState(controller.signal);
-      setState(nextState);
-      setConnection("live");
-      setError(null);
-      hasLiveStateRef.current = true;
-    } catch (reason) {
-      if (controller.signal.aborted) return;
-      setConnection(hasLiveStateRef.current ? "stale" : "preview");
-      setError(reason instanceof Error ? reason.message : "Control plane unavailable");
-    } finally {
-      if (abortRef.current === controller) abortRef.current = null;
-      inFlightRef.current = false;
-    }
+    const refreshPromise = (async () => {
+      try {
+        const nextState = await fetchMissionState(controller.signal);
+        setState(nextState);
+        setConnection("live");
+        setError(null);
+        hasLiveStateRef.current = true;
+        return true;
+      } catch (reason) {
+        if (!controller.signal.aborted) {
+          setConnection(hasLiveStateRef.current ? "stale" : "preview");
+          setError(reason instanceof Error ? reason.message : "Control plane unavailable");
+        }
+        return false;
+      } finally {
+        if (abortRef.current === controller) abortRef.current = null;
+        refreshPromiseRef.current = null;
+      }
+    })();
+    refreshPromiseRef.current = refreshPromise;
+    return refreshPromise;
   }, []);
 
   useEffect(() => {

@@ -14,7 +14,7 @@ function renderLanding(overrides: Partial<ComponentProps<typeof LandingPage>> = 
     error: null,
     onLaunch: vi.fn(),
     onLaunchAgent: vi.fn(),
-    onRefresh: vi.fn(async () => undefined),
+    onRefresh: vi.fn(async () => true),
     ...overrides,
   };
   render(<LandingPage {...props} />);
@@ -56,7 +56,7 @@ describe("functional product overview", () => {
   });
 
   it("refreshes the evidence from the live-state callback", async () => {
-    const onRefresh = vi.fn(async () => undefined);
+    const onRefresh = vi.fn(async () => true);
     renderLanding({ onRefresh });
     fireEvent.click(screen.getByRole("button", { name: "Refresh evidence" }));
     await waitFor(() => expect(onRefresh).toHaveBeenCalledOnce());

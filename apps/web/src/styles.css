@@ -365,6 +365,8 @@ code {
 .command-signals code { min-height: 28px; display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto; padding: 0 8px; color: #405248; background: #f3f5f0; border: 1px solid var(--border); border-radius: 999px; font-size: 0.54rem; font-style: normal; }
 .command-signals code { color: #5a4531; background: var(--amber-soft); font-family: "Roboto Mono Variable", monospace; }
 .command-signals .signal-live { color: #176844; background: var(--mint-soft); }
+.command-signals .signal-verified { color: #176844; background: var(--mint-soft); }
+.command-signals .signal-unverified { color: #9a4b16; background: var(--amber-soft); }
 .command-signals .signal-stale,
 .command-signals .signal-preview { color: #8a501a; background: var(--amber-soft); }
 .command-signals span > i { width: 6px; height: 6px; background: currentColor; border-radius: 50%; }

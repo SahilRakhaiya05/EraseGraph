@@ -45,7 +45,7 @@ Copy the concise text from `docs/SUBMISSION.md`. Use:
 Track emphasis:
 
 - **TrueForge:** three discovery lanes, sandboxed reconciliation, eight MCP tools, native approval, same-session resume.
-- **Code quality:** deterministic policy, exact state/hash binding, resumable idempotent deletion, fresh positive/negative verification, 42 tests, and pull-request CI.
+- **Code quality:** deterministic policy, exact state/hash binding, resumable idempotent deletion, fresh positive/negative verification, 48 tests, and pull-request CI.
 - **UI:** functional editorial landing page, operational case story, purpose graph plus searchable decision ledger, live command bar/evidence, responsive desktop/iPad/phone layouts, and lazy official SDK console.
 
 ## 5. Submit and archive evidence
