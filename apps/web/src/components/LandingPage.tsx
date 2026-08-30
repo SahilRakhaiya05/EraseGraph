@@ -1,5 +1,8 @@
 import {
   ArrowRight,
+  Bell,
+  BookOpen,
+  Boxes,
   Braces,
   Check,
   CheckCircle2,
@@ -7,20 +10,25 @@ import {
   Database,
   ExternalLink,
   FileCheck2,
+  FileJson,
   GitBranch,
   HardDrive,
   KeyRound,
+  Layers,
   LockKeyhole,
   Menu,
+  Network,
+  Radar,
   RefreshCw,
   Search,
   ShieldCheck,
   Sparkles,
   Trash2,
   UserCheck,
+  Users,
   Waypoints,
 } from "lucide-react";
-import { useMemo, useState, type FormEvent, type KeyboardEvent } from "react";
+import { useMemo, useState, type FormEvent, type KeyboardEvent, type MouseEvent } from "react";
 import type { ConnectionStatus, MissionState } from "../types";
 import { deriveMissionPhase, formatDate, formatTimestamp, shortHash, titleCase } from "../utils";
 import { BrandMark } from "./BrandMark";
@@ -42,6 +50,15 @@ const connectionLabels: Record<ConnectionStatus, string> = {
 };
 
 const QUICKSTART_COMMAND = "docker compose up -d && npm --prefix services/erasegraph-mcp ci && npm --prefix apps/web ci";
+
+const NAV_ITEMS = [
+  { href: "#use-case", label: "Use case" },
+  { href: "#workflow", label: "Workflow" },
+  { href: "#surfaces", label: "Surfaces" },
+  { href: "#architecture", label: "Architecture" },
+  { href: "#evidence", label: "Evidence" },
+  { href: "#faq", label: "FAQ" },
+] as const;
 
 export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent, onRefresh }: LandingPageProps) {
   const [caseId, setCaseId] = useState(state.request.id);
@@ -101,6 +118,56 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
     },
   ];
 
+  const operatorSurfaces = [
+    {
+      icon: <Network size={18} />,
+      title: "Spatial graph",
+      detail: "Map the subject to every store copy with live purpose, fingerprint, and retention metadata.",
+      action: "Open graph",
+      onClick: onLaunch,
+    },
+    {
+      icon: <Layers size={18} />,
+      title: "Decision ledger",
+      detail: "Search and filter the complete erase/retain inventory with policy class and source fingerprints.",
+      action: "Open ledger",
+      onClick: onLaunch,
+    },
+    {
+      icon: <KeyRound size={18} />,
+      title: "Approval gate",
+      detail: "Pause on the exact irreversible MCP call with the sealed plan hash and mutation diff.",
+      action: "Open gate",
+      onClick: onLaunchAgent,
+    },
+    {
+      icon: <FileJson size={18} />,
+      title: "Evidence packet",
+      detail: "Export request, plan, receipt, verification checks, and the local hash-linked audit sequence.",
+      action: "View evidence",
+      onClick: onLaunch,
+    },
+    {
+      icon: <GitBranch size={18} />,
+      title: "Agent console",
+      detail: "Run TrueForge with dynamic subagents, sandbox reconciliation, and native tool approval.",
+      action: "Run agent",
+      onClick: onLaunchAgent,
+    },
+    {
+      icon: <BookOpen size={18} />,
+      title: "Policy pack",
+      detail: "Inspect purpose scope, protected classes, and fail-closed rules before any mutation.",
+      action: "Inspect policy",
+      onClick: onLaunch,
+    },
+  ];
+
+  const closeMobileNav = (event: MouseEvent<HTMLAnchorElement>) => {
+    const menu = event.currentTarget.closest("details");
+    if (menu) menu.open = false;
+  };
+
   const submitLookup = (event: FormEvent) => {
     event.preventDefault();
     if (caseId.trim().toUpperCase() !== state.request.id.toUpperCase()) {
@@ -148,15 +215,15 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
         <nav className="landing-nav" aria-label="Primary navigation">
           <a className="landing-brand" href="#top" aria-label="EraseGraph home"><BrandMark /></a>
           <div className="landing-links">
-            <a href="#use-case">Use case</a>
-            <a href="#workflow">Workflow</a>
-            <a href="#safety">Safety</a>
-            <a href="#evidence">Evidence</a>
-            <a href="#run">Run locally</a>
-            <a href="#faq">FAQ</a>
+            {NAV_ITEMS.map((item) => (
+              <a key={item.href} href={item.href}>{item.label}</a>
+            ))}
           </div>
           <div className="landing-nav-actions">
             <span className={`landing-live connection-${connection}`}><i /> {connectionLabels[connection]}</span>
+            <button className="landing-button landing-button-ghost" type="button" onClick={onLaunchAgent}>
+              Run with agent
+            </button>
             <button className="landing-button landing-button-dark" type="button" onClick={onLaunch}>
               Open workspace <ArrowRight size={16} />
             </button>
@@ -164,9 +231,29 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
           <details className="landing-mobile-menu">
             <summary aria-label="Open navigation"><Menu size={19} /></summary>
             <div>
-              {[{ href: "#use-case", label: "Use case" }, { href: "#workflow", label: "Workflow" }, { href: "#safety", label: "Safety" }, { href: "#evidence", label: "Evidence" }, { href: "#run", label: "Run locally" }, { href: "#faq", label: "FAQ" }].map((item) => (
-                <a key={item.href} href={item.href} onClick={(event) => { const menu = event.currentTarget.closest("details"); if (menu) menu.open = false; }}>{item.label}</a>
+              {NAV_ITEMS.map((item) => (
+                <a key={item.href} href={item.href} onClick={closeMobileNav}>{item.label}</a>
               ))}
+              <button
+                type="button"
+                onClick={(event) => {
+                  const menu = event.currentTarget.closest("details");
+                  if (menu) menu.open = false;
+                  onLaunchAgent();
+                }}
+              >
+                Run with agent
+              </button>
+              <button
+                type="button"
+                onClick={(event) => {
+                  const menu = event.currentTarget.closest("details");
+                  if (menu) menu.open = false;
+                  onLaunch();
+                }}
+              >
+                Open workspace
+              </button>
             </div>
           </details>
         </nav>
@@ -179,53 +266,129 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
             <button className="hero-proof-pill" type="button" onClick={() => document.getElementById("evidence")?.scrollIntoView({ behavior: "smooth" })}>
               <ShieldCheck size={15} /> {isLive ? "Live synthetic case" : "Synthetic preview case"} <span>{state.request.id}</span> <ArrowRight size={14} />
             </button>
-            <h1 id="landing-title">Your data is everywhere.<br /><span>Erasure needs proof.</span></h1>
-            <p>EraseGraph turns one verified consent withdrawal into a purpose-scoped, approval-gated change across Postgres and MinIO—then independently checks the result.</p>
+            <h1 id="landing-title">Public data spreads fast.<br /><span>Erasure still needs proof.</span></h1>
+            <p>
+              The all-in-one privacy operations workspace for purpose-scoped consent withdrawal.
+              Discover copies, reconcile policy, pause for exact approval, and independently verify the outcome.
+            </p>
 
             <form className="case-lookup" onSubmit={submitLookup}>
               <label className="sr-only" htmlFor="case-id">Synthetic case ID</label>
               <Search size={18} aria-hidden="true" />
-              <input id="case-id" value={caseId} onChange={(event) => setCaseId(event.target.value)} autoComplete="off" spellCheck="false" aria-describedby="case-lookup-status" />
-              <button type="submit">Open live case <ArrowRight size={16} /></button>
+              <input id="case-id" value={caseId} onChange={(event) => setCaseId(event.target.value)} autoComplete="off" spellCheck="false" aria-describedby="case-lookup-status" placeholder="Enter case ID" />
+              <button type="submit">Start investigating <ArrowRight size={16} /></button>
             </form>
             <p id="case-lookup-status" className={`lookup-status ${lookupMessage || error ? "is-error" : ""}`} role="status">
               {lookupMessage || error || `${state.request.subjectName} · ${titleCase(state.request.purpose)} · synthetic data only`}
             </p>
+
+            <div className="hero-cta-row">
+              <button className="landing-button landing-button-dark" type="button" onClick={onLaunch}>
+                Open live workspace <ArrowRight size={16} />
+              </button>
+              <button className="landing-button landing-button-outline" type="button" onClick={() => document.getElementById("architecture")?.scrollIntoView({ behavior: "smooth" })}>
+                View architecture
+              </button>
+            </div>
           </div>
 
-          <div className="hero-product-frame" aria-label="Live EraseGraph case preview">
-            <div className="product-frame-bar">
-              <span><i className={`connection-${connection}`} /> {connectionLabels[connection]}</span>
-              <code>{state.request.id}</code>
-              <button type="button" onClick={onLaunch}>Explore workspace <ArrowRight size={14} /></button>
-            </div>
-            <div className="hero-graph-preview">
-              <div className="hero-preview-copy">
-                <span className="eyebrow">Purpose map · {titleCase(phase)}</span>
-                <h2>{state.request.subjectName}</h2>
-                <p>{totals.records} resources reconciled against <code>{state.request.purpose}</code></p>
+          <div className="hero-stage">
+            <aside className="hero-float-card float-policy" aria-label="Policy analysis preview">
+              <div className="float-card-head">
+                <Radar size={15} />
+                <strong>Policy analysis</strong>
+                <span>Live</span>
               </div>
-              <div className="preview-map" aria-hidden="true">
-                <span className="preview-person">{subjectInitials}</span>
-                <i className="preview-line line-left" />
-                <i className="preview-line line-right" />
-                {previewStores[0] && <span className="preview-store preview-store-left"><Database size={20} /> {previewStores[0].name.replace("Customer Data ", "")} <small>{previewStores[0].recordCount} records</small></span>}
-                {previewStores[1] && <span className="preview-store preview-store-right"><HardDrive size={20} /> {previewStores[1].name.replace("Training Artifacts ", "")} <small>{previewStores[1].recordCount} objects</small></span>}
+              <ul>
+                <li><span>Training-only matches</span><strong>{totals.erase}</strong></li>
+                <li><span>Retention protected</span><strong>{totals.retain}</strong></li>
+                <li><span>Purpose bound</span><strong>100%</strong></li>
+              </ul>
+            </aside>
+
+            <aside className="hero-float-card float-alerts" aria-label="Operator activity preview">
+              <div className="float-card-head">
+                <Bell size={15} />
+                <strong>Case activity</strong>
               </div>
-              <div className="preview-decision">
-                <span><Trash2 size={15} /><strong>{totals.erase}</strong> erase</span>
-                <span><LockKeyhole size={15} /><strong>{totals.retain}</strong> retain</span>
-                <button type="button" onClick={runGateAction}>{proofReady ? <FileCheck2 size={15} /> : <KeyRound size={15} />} {gateActionLabel}</button>
+              <ol>
+                <li><i /> Identity verified <small>ready</small></li>
+                <li><i /> Inventory reconciled <small>{totals.records} resources</small></li>
+                <li><i /> {state.plan ? "Plan sealed" : "Awaiting rehearsal"} <small>{state.plan ? shortHash(state.plan.hash, 8) : "pending"}</small></li>
+              </ol>
+            </aside>
+
+            <aside className="hero-float-card float-team" aria-label="Operator roles preview">
+              <div className="float-card-head">
+                <Users size={15} />
+                <strong>Operator roles</strong>
+              </div>
+              <ul className="float-team-list">
+                <li><span>Privacy operator</span><em>Owner</em></li>
+                <li><span>TrueForge harness</span><em>Executor</em></li>
+                <li><span>Control plane</span><em>Policy</em></li>
+              </ul>
+            </aside>
+
+            <div className="hero-product-frame" aria-label="Live EraseGraph case preview">
+              <div className="product-frame-bar">
+                <span><i className={`connection-${connection}`} /> {connectionLabels[connection]}</span>
+                <code>{state.request.id}</code>
+                <button type="button" onClick={onLaunch}>Explore workspace <ArrowRight size={14} /></button>
+              </div>
+              <div className="hero-graph-preview">
+                <div className="hero-preview-copy">
+                  <span className="eyebrow">Purpose map · {titleCase(phase)}</span>
+                  <h2>{state.request.subjectName}</h2>
+                  <p>{totals.records} resources reconciled against <code>{state.request.purpose}</code></p>
+                </div>
+                <div className="preview-map" aria-hidden="true">
+                  <span className="preview-person">{subjectInitials}</span>
+                  <i className="preview-line line-left" />
+                  <i className="preview-line line-right" />
+                  {previewStores[0] && <span className="preview-store preview-store-left"><Database size={20} /> {previewStores[0].name.replace("Customer Data ", "")} <small>{previewStores[0].recordCount} records</small></span>}
+                  {previewStores[1] && <span className="preview-store preview-store-right"><HardDrive size={20} /> {previewStores[1].name.replace("Training Artifacts ", "")} <small>{previewStores[1].recordCount} objects</small></span>}
+                </div>
+                <div className="preview-decision">
+                  <span><Trash2 size={15} /><strong>{totals.erase}</strong> erase</span>
+                  <span><LockKeyhole size={15} /><strong>{totals.retain}</strong> retain</span>
+                  <button type="button" onClick={runGateAction}>{proofReady ? <FileCheck2 size={15} /> : <KeyRound size={15} />} {gateActionLabel}</button>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         <ul className="capability-ribbon" aria-label="Product capabilities">
-          {["TrueForge 0.1.4", "8 typed MCP tools", "Dynamic subagents", "Linux sandbox", "Native approval", "Fresh verification"].map((item) => (
+          {["TrueForge 0.1.4", "8 typed MCP tools", "Dynamic subagents", "Linux sandbox", "Native approval", "Fresh verification", "Hash-linked evidence", "Postgres + MinIO"].map((item) => (
             <li key={item}><CheckCircle2 size={15} /> {item}</li>
           ))}
         </ul>
+
+        <section className="landing-section philosophy-section" id="philosophy" aria-labelledby="philosophy-title">
+          <div className="section-heading centered-heading">
+            <span className="section-kicker">Built for real privacy workflows</span>
+            <h2 id="philosophy-title">A deletion is only useful when the proof travels with it.</h2>
+            <p>EraseGraph turns a verified request into case context, exact impact, and inspectable evidence—without handing store credentials to generated code.</p>
+          </div>
+          <div className="philosophy-grid">
+            <article>
+              <span><Search size={20} /></span>
+              <h3>Follow the request</h3>
+              <p>Start from a verified identity and a purpose-scoped consent withdrawal—not a blanket delete of the whole customer relationship.</p>
+            </article>
+            <article>
+              <span><Boxes size={20} /></span>
+              <h3>Build the inventory</h3>
+              <p>Bring Postgres rows, MinIO objects, fingerprints, and retention decisions into one complete, reviewable case file.</p>
+            </article>
+            <article>
+              <span><ShieldCheck size={20} /></span>
+              <h3>Keep the proof</h3>
+              <p>Seal the plan, pause for human approval, re-query both stores, and export an evidence packet that survives inspection.</p>
+            </article>
+          </div>
+        </section>
 
         <section className="landing-section use-case-section" id="use-case" aria-labelledby="use-case-title">
           <div className="section-heading split-heading">
@@ -322,6 +485,28 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
           </div>
         </section>
 
+        <section className="landing-section surfaces-section" id="surfaces" aria-labelledby="surfaces-title">
+          <div className="section-heading split-heading">
+            <div>
+              <span className="section-kicker">Everything you need in one workspace</span>
+              <h2 id="surfaces-title">Operator surfaces built for signal-to-action speed.</h2>
+            </div>
+            <p>Every control opens a working product surface—not a static mock. Graph, ledger, gate, evidence, agent, and policy stay tied to the same live case.</p>
+          </div>
+          <div className="surfaces-grid">
+            {operatorSurfaces.map((surface) => (
+              <article key={surface.title} className="surface-card">
+                <span className="surface-icon">{surface.icon}</span>
+                <h3>{surface.title}</h3>
+                <p>{surface.detail}</p>
+                <button className="text-action" type="button" onClick={surface.onClick}>
+                  {surface.action} <ArrowRight size={15} />
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="landing-section" id="safety" aria-labelledby="safety-title">
           <div className="section-heading split-heading">
             <div><span className="section-kicker">Control is a product feature</span><h2 id="safety-title">The model proposes.<br />The boundary decides.</h2></div>
@@ -372,6 +557,45 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
           </div>
         </section>
 
+        <section className="landing-section architecture-section" id="architecture" aria-labelledby="architecture-title">
+          <div className="section-heading centered-heading">
+            <span className="section-kicker">Final system diagram</span>
+            <h2 id="architecture-title">Trust boundaries you can read at a glance.</h2>
+            <p>The UI never talks to the stores directly. TrueForge orchestrates. The MCP control plane owns policy, mutation, and proof.</p>
+          </div>
+          <div className="architecture-board" aria-label="EraseGraph system architecture">
+            <div className="arch-lane">
+              <span className="arch-lane-label">Human</span>
+              <div className="arch-node arch-human">Privacy operator</div>
+            </div>
+            <div className="arch-flow" aria-hidden="true">→</div>
+            <div className="arch-lane">
+              <span className="arch-lane-label">Product</span>
+              <div className="arch-node">EraseGraph UI</div>
+              <div className="arch-node arch-accent">TrueForge harness</div>
+              <div className="arch-node">Linux sandbox</div>
+            </div>
+            <div className="arch-flow" aria-hidden="true">→</div>
+            <div className="arch-lane">
+              <span className="arch-lane-label">Control plane</span>
+              <div className="arch-node arch-accent">8 MCP tools</div>
+              <div className="arch-node">Policy + hashes</div>
+              <div className="arch-node">Evidence export</div>
+            </div>
+            <div className="arch-flow" aria-hidden="true">→</div>
+            <div className="arch-lane">
+              <span className="arch-lane-label">Stores</span>
+              <div className="arch-node"><Database size={14} /> Postgres 16</div>
+              <div className="arch-node"><HardDrive size={14} /> MinIO</div>
+            </div>
+          </div>
+          <div className="architecture-notes">
+            <p><KeyRound size={15} /> Exact approval pause on <code>execute_approved_plan</code></p>
+            <p><ShieldCheck size={15} /> Server recomputes policy before every mutation</p>
+            <p><FileCheck2 size={15} /> Independent verification after execution</p>
+          </div>
+        </section>
+
         <section className="landing-section evidence-section" id="evidence" aria-labelledby="evidence-title">
           <div className="section-heading split-heading">
             <div><span className="section-kicker">{isLive ? "Live evidence, not a success toast" : "Evidence preview, clearly labeled"}</span><h2 id="evidence-title">See what the system can actually prove.</h2></div>
@@ -390,7 +614,7 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
               <p><ShieldCheck size={15} /> Locally consistency-checked; the exported packet explicitly reports that this unkeyed sequence is not externally anchored.</p>
             </article>
             <aside className="evidence-summary" aria-label="Current case evidence summary">
-              <span className="verification-mark"><FingerprintIcon /></span>
+              <span className="verification-mark"><ShieldCheck size={34} /></span>
               <span className="section-kicker">Current case posture</span>
               <h3>{state.verification ? titleCase(state.verification.status) : state.plan ? "Awaiting a person" : "Ready to rehearse"}</h3>
               <dl>
@@ -419,19 +643,25 @@ export function LandingPage({ state, connection, error, onLaunch, onLaunchAgent,
             <details><summary>Can the model bypass approval?</summary><p>No. TrueForge owns the native pause on <code>execute_approved_plan</code>, and the control plane independently rejects unverified, incomplete, stale, changed, or policy-invalid requests.</p></details>
             <details><summary>Which API keys are required?</summary><p>EraseGraph and its frontend need no external API key. TrueForge needs a configured model provider; this repository's helper accepts <code>OPENAI_API_KEY</code>. The MCP bearer token stays local and is never shown in the UI.</p></details>
             <details><summary>Is the evidence a legal compliance certificate?</summary><p>No. It is operational evidence for a synthetic demonstration. The local SHA-256 sequence detects accidental or partial modification, but is explicitly not externally anchored.</p></details>
+            <details><summary>What does EraseGraph delete?</summary><p>Only purpose-scoped training copies authorized by the sealed plan. Account-service, billing, consent-history, and legal-hold records are retained by deterministic policy.</p></details>
+            <details><summary>How do I reset the demo safely?</summary><p>Use <code>POST /api/demo/reset</code> or the workspace reset control. Docker volumes stay local and are never removed by project scripts.</p></details>
           </div>
         </section>
       </main>
 
       <footer className="landing-footer">
         <div><BrandMark /><p>Right to erasure, with evidence.</p></div>
-        <nav aria-label="Footer navigation"><a href="#use-case">Use case</a><a href="#workflow">Workflow</a><a href="#safety">Safety</a><a href="#evidence">Evidence</a><a href="#run">Run locally</a><a href="#faq">FAQ</a><a href="https://www.wemakedevs.org/hackathons/trueforge" target="_blank" rel="noreferrer">TrueForge hackathon <ExternalLink size={13} /></a></nav>
+        <nav aria-label="Footer navigation">
+          <a href="#use-case">Use case</a>
+          <a href="#surfaces">Surfaces</a>
+          <a href="#architecture">Architecture</a>
+          <a href="#evidence">Evidence</a>
+          <a href="#run">Run locally</a>
+          <a href="#faq">FAQ</a>
+          <a href="https://www.wemakedevs.org/hackathons/trueforge" target="_blank" rel="noreferrer">TrueForge hackathon <ExternalLink size={13} /></a>
+        </nav>
         <span>Synthetic demonstration · not legal advice</span>
       </footer>
     </div>
   );
-}
-
-function FingerprintIcon() {
-  return <ShieldCheck size={34} />;
 }

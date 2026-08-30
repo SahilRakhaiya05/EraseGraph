@@ -4,17 +4,37 @@
 
 ```mermaid
 flowchart LR
-    O[Privacy operator] --> W[EraseGraph mission control\nReact + TrueForge UI SDK]
-    W --> T[TrueForge agent harness\nlocalhost:8790]
-    T --> S[TrueForge Linux sandbox\nreconcile complete plan]
-    T -->|Streamable HTTP MCP| C[EraseGraph control plane\nlocalhost:8787]
-    C --> P[(Postgres 16\nsubject records)]
-    C --> M[(MinIO\ntraining artifacts)]
-    C --> E[SHA-256 evidence chain]
-    T -. explicit approval .-> O
+    subgraph Human["Human trust boundary"]
+      O[Privacy operator]
+    end
+
+    subgraph Product["Product trust boundary"]
+      W[EraseGraph mission control\nReact + TrueForge UI SDK]
+      T[TrueForge agent harness\nlocalhost:8790]
+      S[TrueForge Linux sandbox\ncomplete plan rehearsal]
+    end
+
+    subgraph Control["Control-plane trust boundary"]
+      C[EraseGraph MCP control plane\nlocalhost:8787]
+      E[SHA-256 evidence chain\n+ verification report]
+    end
+
+    subgraph Data["Data-plane trust boundary"]
+      P[(Postgres 16\nsubject records)]
+      M[(MinIO\ntraining artifacts)]
+    end
+
+    O --> W
+    W --> T
+    T --> S
+    T -->|Streamable HTTP MCP| C
+    C --> P
+    C --> M
+    C --> E
+    T -. exact approval pause .-> O
 ```
 
-TrueForge is not a chat wrapper here. It owns orchestration, subagent delegation, the isolated reconciliation step, the irreversible-tool pause, session persistence, and the operator-facing conversation. The MCP control plane owns policy, state, and effects.
+TrueForge is not a chat wrapper here. It owns orchestration, subagent delegation, the isolated reconciliation step, the irreversible-tool pause, session persistence, and the operator-facing conversation. The MCP control plane owns policy, state, and effects. The product UI never receives store credentials and never mutates Postgres or MinIO directly.
 
 ## Trust boundary
 

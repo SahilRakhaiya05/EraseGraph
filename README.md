@@ -2,33 +2,68 @@
 
 > **Right to erasure, with evidence.**
 
-EraseGraph is an approval-gated privacy operations agent built for the 2026 TrueForge Agent Harness Hackathon. It processes one synthetic model-training consent withdrawal across Postgres and MinIO, preserves records outside the purpose or covered by configured retention rules, pauses at the exact irreversible MCP call, and independently proves the result.
+EraseGraph is an approval-gated privacy operations product for the 2026 TrueForge Agent Harness Hackathon. It turns one verified, purpose-scoped consent withdrawal into a complete cross-store inventory, a sealed plan, a native human approval pause, and independently verified proof across Postgres and MinIO.
 
 Submit it to all three tracks: **Best Use of TrueForge**, **Best Code Quality**, and **Best UI**.
 
-## The demo in one sentence
+## Product in one sentence
 
-Withdraw Maya Chen's consent for model-training use, delete four training-only copies, preserve six account/audit/billing/hold records, and export evidence that both outcomes are true.
+Withdraw Maya Chen's consent for `model_training`, delete four training-only copies, retain six account/audit/billing/hold records, and export evidence that both outcomes are true.
 
-The model orchestrates the investigation. Deterministic code decides what is allowed. A human authorizes the irreversible plan.
+The model orchestrates discovery. Deterministic server policy decides what is allowed. A human authorizes the irreversible plan. Fresh store reads—not model narration—decide success.
 
-The original public landing page leads with a live case lookup, a state-driven operational case file, interactive workflow, safety controls, current evidence, local setup, and FAQ. Inside the workspace, operators can switch between the spatial graph and a searchable decision ledger backed by live purpose, retention, fingerprint, and policy metadata. Sync, filtering, evidence, navigation, and TrueForge actions are working controls rather than static mock-ups.
+## What operators get
+
+| Surface | What it does |
+|---|---|
+| Public product overview | Live case lookup, workflow stages, operator surfaces, architecture, evidence, FAQ |
+| Spatial graph | Subject-to-store map with purpose, fingerprint, and retention metadata |
+| Decision ledger | Searchable erase/retain inventory with policy class filtering |
+| Approval gate | Exact irreversible MCP pause with sealed plan hash and mutation diff |
+| Agent console | TrueForge UI with dynamic subagents, sandbox reconciliation, and native tool approval |
+| Evidence packet | Request, plan, receipt, verification checks, and local hash-linked audit sequence |
+
+Sync, filtering, navigation, refresh, reset, and TrueForge actions are working controls—not static mock-ups.
 
 ![EraseGraph live product overview](docs/assets/erasegraph-landing.png)
 
 ![EraseGraph verified mission control](docs/assets/erasegraph-verified.png)
 
+## Final system diagram
+
 ```mermaid
 flowchart LR
-    H[Operator] --> U[EraseGraph UI]
-    U --> T[TrueForge harness]
-    T --> S[Isolated plan rehearsal]
-    T -->|8 MCP tools| C[Policy control plane]
-    C --> P[(Postgres)]
-    C --> M[(MinIO)]
-    T -. exact approval .-> H
-    C --> V[Independent verification\n+ hash-chained evidence]
+    subgraph Human["Trust: Human"]
+      H[Privacy operator]
+    end
+
+    subgraph Product["Trust: Product UI"]
+      U[EraseGraph workspace]
+      T[TrueForge harness]
+      S[Linux sandbox\ncomplete plan rehearsal]
+    end
+
+    subgraph Control["Trust: MCP control plane"]
+      C[Policy + hashes\n8 typed tools]
+      V[Independent verification\n+ evidence export]
+    end
+
+    subgraph Stores["Trust: Data plane"]
+      P[(Postgres 16)]
+      M[(MinIO)]
+    end
+
+    H --> U
+    U --> T
+    T --> S
+    T -->|Streamable HTTP MCP| C
+    C --> P
+    C --> M
+    T -. exact approval pause .-> H
+    C --> V
 ```
+
+**Read left to right:** the UI never talks to the stores directly. TrueForge owns orchestration and the irreversible-tool pause. The MCP control plane owns policy recomputation, mutation, and proof.
 
 ## Why this is a TrueForge-native product
 
@@ -188,7 +223,7 @@ Run the full local gate:
 npm run check
 ```
 
-The suite currently contains **48 automated tests**. It covers the live case story, graph/ledger search and retention filtering, workspace identity and sync-state controls, joined polling/manual refreshes, landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. GitHub Actions runs this complete gate on every pull request; both production dependency trees currently audit with zero known vulnerabilities.
+The suite currently contains **49 automated tests** across the web app and MCP control plane. It covers the live case story, operator surfaces, architecture overview, graph/ledger search and retention filtering, workspace identity and sync-state controls, joined polling/manual refreshes, landing-page behavior and accessibility, frontend mission controls, configuration safety, authorization, hostile-origin rejection, policy rejection, retention protection, atomic precondition failures, partial-failure and interrupted-finalization recovery, terminal-audit repair, retained metadata/policy drift, stale-plan detection, idempotency, resurrection detection, postcondition verification, local audit-sequence consistency, and a real MCP SDK-over-HTTP integration. GitHub Actions runs this complete gate on every pull request; both production dependency trees currently audit with zero known vulnerabilities.
 
 ## Repository map
 
