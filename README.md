@@ -222,14 +222,13 @@ docs/QODO_CHECKLIST.md       Required review-to-merge workflow
 
 ## Qodo Code Review Evidence
 
-> **Required before submission:** this section must point to the public, merged pull request reviewed by Qodo.
+Qodo reviewed [pull request #1](https://github.com/SahilRakhaiya05/EraseGraph/pull/1) and identified four operator-state issues: unverified identity was shown as verified, failed refreshes could report success, retention classes were omitted from ledger search, and an older feedback timer could race a newer sync.
 
-- Reviewed PR: `[QODO_REVIEWED_PR_URL]`
-- Findings: `[SUMMARY_OF_QODO_FINDINGS]`
-- Remediation: `[COMMIT_OR_EXPLANATION_FOR_EACH_ACTIONABLE_FINDING]`
-- Follow-up: `[ACKNOWLEDGED_NON_BLOCKING_ITEMS_OR_NONE]`
+- Remediation: [`fa78d7e`](https://github.com/SahilRakhaiya05/EraseGraph/commit/fa78d7ea98be6d01eaf65084094450dbe823e99f) adds explicit refresh outcomes, in-flight refresh joining, truthful identity/sync states, timer cleanup, retention-class search, and six focused regression tests.
+- Follow-up review: **0 bugs, 0 rule violations**; all four findings are marked resolved on the public PR.
+- CI evidence: the PR's [`Typecheck, test, build, and audit`](https://github.com/SahilRakhaiya05/EraseGraph/actions/runs/33320796718/job/99282294362) job passes with 48 tests and zero known production dependency vulnerabilities.
 
-Follow [the Qodo review checklist](docs/QODO_CHECKLIST.md). Do not replace these placeholders until the public evidence exists.
+Follow [the Qodo review checklist](docs/QODO_CHECKLIST.md) and merge the reviewed PR before final submission.
 
 ## AI assistance disclosure
 
